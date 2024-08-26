@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:notes_page_assignment/models/note.dart';
 import 'package:notes_page_assignment/utils/add_note.dart';
+import 'package:notes_page_assignment/utils/add_note_android.dart';
 
 class Home extends StatefulWidget {
   final String? title;
@@ -13,30 +14,32 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var target = TargetPlatform.iOS;
-
-  final List<Note> noteList = [
-    const Note(title: 'Title', description: 'description'),
-    const Note(title: 'Sports', description: 'Golf'),
-    const Note(title: 'ToDo', description: 'hunt mammoth')
+  final noteList = [
+    NoteEntity(title: 'Title', description: 'description'),
+    NoteEntity(title: 'Sports', description: 'Golf'),
+    NoteEntity(title: 'ToDo', description: 'hunt mammoth')
   ];
 
-  void deleteNote(Note index) {
-    setState(() {
-      noteList.remove(index);
-    });
+  void deleteNote(NoteEntity note) {
+    noteList.remove(note);
+    setState(() {});
   }
 
-  void addNote() {
-    setState(() {
-      noteList.add(
-        Note(title: widget.title, description: widget.description),
-      );
-    });
+  void addNote(String title, String description) {
+    noteList.add(
+      NoteEntity(title: title, description: description),
+    );
+    setState(() {});
+  }
+
+  void editNote(int index, String title, String description) {
+    noteList[index] = NoteEntity(title: title, description: description);
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isIos = Theme.of(context).platform == TargetPlatform.iOS;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notes'),
@@ -47,13 +50,11 @@ class _HomeState extends State<Home> {
       body: ListView.builder(
         itemCount: noteList.length,
         itemBuilder: (context, index) => Note(
-          title: noteList[index].title,
-          description: noteList[index].description,
-          noteList: noteList,
-          delete: () => setState(() {
-            deleteNote(noteList[index]);
-          }),
-          index: index,
+          note: noteList[index],
+          delete: (note) => deleteNote(note),
+          edit: (note, title, description) {
+            editNote(index, title, description);
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -61,7 +62,9 @@ class _HomeState extends State<Home> {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return AddNote(noteList: noteList);
+              return isIos
+                  ? AddNote(add: addNote)
+                  : AddNoteAndroid(add: addNote);
             },
           );
         },

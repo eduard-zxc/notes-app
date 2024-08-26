@@ -1,25 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:notes_page_assignment/models/note.dart';
 
-class AddNote extends StatefulWidget {
-  final String? title;
-  final String? description;
-  final List<Note>? noteList;
+class AddNote extends StatelessWidget {
+  final void Function(String title, String description)? add;
 
-  const AddNote({super.key, this.title, this.description, this.noteList});
+  AddNote({super.key, this.add});
 
-  @override
-  State<AddNote> createState() => _AddNoteState();
-}
-
-class _AddNoteState extends State<AddNote> {
   final _formKey = GlobalKey<FormState>();
+
+  final _titleController = TextEditingController();
+
+  final _descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
-      title: const Text('Create a new note'),
+      title: const Text('Create new note'),
       content: SingleChildScrollView(
         child: ListBody(
           children: [
@@ -28,20 +24,24 @@ class _AddNoteState extends State<AddNote> {
               child: Column(
                 children: [
                   const SizedBox(height: 10),
-                  CupertinoTextField(
+                  CupertinoTextFormFieldRow(
                     maxLength: 30,
+                    padding: const EdgeInsets.all(0),
                     placeholder: 'Enter title',
                     placeholderStyle: const TextStyle(color: Colors.grey),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.white,
                     ),
-                    // textInputAction: TextInputAction.next,
-                    onSubmitted: (value) => widget.title,
+                    controller: _titleController,
+                    validator: (value) =>
+                        value!.isEmpty ? 'This field is required' : null,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                   ),
                   const SizedBox(height: 10),
-                  CupertinoTextField(
+                  CupertinoTextFormFieldRow(
                     maxLength: 200,
+                    padding: const EdgeInsets.all(0),
                     maxLines: 5,
                     placeholder: 'Enter description',
                     placeholderStyle: const TextStyle(color: Colors.grey),
@@ -49,7 +49,10 @@ class _AddNoteState extends State<AddNote> {
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.white,
                     ),
-                    onSubmitted: (value) => widget.description,
+                    controller: _descriptionController,
+                    validator: (value) =>
+                        value!.isEmpty ? 'This field is required' : null,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                   ),
                 ],
               ),
@@ -70,19 +73,19 @@ class _AddNoteState extends State<AddNote> {
         // ignore: prefer_const_constructors
         TextButton(
           onPressed: () {
-            setState(() {
-              widget.noteList!.add(
-                Note(title: widget.title, description: widget.description),
-              );
-            });
-            Navigator.of(context).pop();
+            if (_formKey.currentState!.validate()) {
+              add?.call(_titleController.text, _descriptionController.text);
+              Navigator.of(context).pop();
+            }
+            // print(widget.title);
+            // print(widget.description);
           },
           child: const Text(
             'Add',
             style: TextStyle(
                 fontWeight: FontWeight.bold, color: CupertinoColors.activeBlue),
           ),
-        )
+        ),
       ],
     );
   }

@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:notes_page_assignment/models/note.dart';
 
-class DeleteNote extends StatelessWidget {
+class DeleteNoteAndroid extends StatelessWidget {
   final NoteEntity note;
   final void Function(NoteEntity note)? deleteNote;
 
-  const DeleteNote({
+  const DeleteNoteAndroid({
     super.key,
     required this.note,
     required this.deleteNote,
@@ -14,7 +14,7 @@ class DeleteNote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoAlertDialog(
+    return AlertDialog(
       title: const Text('Delete note'),
       content: const SingleChildScrollView(
         child: ListBody(
@@ -28,10 +28,7 @@ class DeleteNote extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: const Text(
-            'Cancel',
-            style: TextStyle(color: CupertinoColors.activeBlue),
-          ),
+          child: const Text('Cancel'),
         ),
         TextButton(
           onPressed: () {
