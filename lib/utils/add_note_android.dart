@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AddNoteAndroid extends StatelessWidget {
@@ -67,8 +66,6 @@ class AddNoteAndroid extends StatelessWidget {
                   add?.call(_titleController.text, _descriptionController.text);
                   Navigator.of(context).pop();
                 }
-                // print(widget.title);
-                // print(widget.description);
               },
               child: const Text(
                 'Add',

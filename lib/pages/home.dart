@@ -1,8 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:notes_page_assignment/models/note.dart';
+import 'package:notes_page_assignment/storage/storage_service.dart';
+import 'package:notes_page_assignment/themes/theme.dart';
 import 'package:notes_page_assignment/utils/add_note.dart';
 import 'package:notes_page_assignment/utils/add_note_android.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   final String? title;
@@ -40,13 +43,34 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     bool isIos = Theme.of(context).platform == TargetPlatform.iOS;
+    final provider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notes'),
-        backgroundColor: Colors.blueGrey,
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.save),
+          ),
+          IconButton(
+            onPressed: () {
+              setState(() {
+                final themeMode = provider.themeMode;
+                provider.setThemeMode(themeMode == ThemeMode.dark
+                    ? ThemeMode.light
+                    : ThemeMode.dark);
+              });
+            },
+            icon: const RightIconWidget(),
+          ),
+        ],
+        leading: IconButton(
+          onPressed: () => context.go('/cat'),
+          icon: const Icon(Icons.catching_pokemon_outlined),
+        ),
       ),
-      backgroundColor: Colors.grey[300],
       body: ListView.builder(
         itemCount: noteList.length,
         itemBuilder: (context, index) => Note(
@@ -68,7 +92,6 @@ class _HomeState extends State<Home> {
             },
           );
         },
-        backgroundColor: Colors.blueGrey,
         child: const Icon(Icons.add),
       ),
     );

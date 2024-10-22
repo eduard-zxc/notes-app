@@ -45,8 +45,8 @@ class _NoteState extends State<Note> {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            spreadRadius: 1,
-            blurRadius: 20,
+            // spreadRadius: 1,
+            blurRadius: 230,
             color: Colors.grey.shade400,
           ),
         ],
